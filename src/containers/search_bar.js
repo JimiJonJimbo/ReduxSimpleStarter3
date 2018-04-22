@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { fetchWeather } from '../actions/index';
 
-export default class SearchBar extends Component {
+class SearchBar extends Component {
   constructor(props) {
     super(props);
 
@@ -18,6 +21,9 @@ export default class SearchBar extends Component {
 
   onFormSubmit(event) {
     event.preventDefault();
+
+    this.props.fetchWeather(this.state.term);
+    this.setState({ term: '' });
   }
 
   render() {
@@ -35,3 +41,14 @@ export default class SearchBar extends Component {
     );
   }
 }
+
+// The goal here is to hook up the action creator fetchWeather
+// to the SearchBar container.
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchWeather: fetchWeather }, dispatch);
+}
+
+// We pass null here because this component does not care about the
+// state that Redux maintains. And mapDispatchToProps always needs to
+// be the second argument.
+export default connect(null, mapDispatchToProps)(SearchBar);
